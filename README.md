@@ -2,6 +2,41 @@
 
 A set of Grafana dashboards and Prometheus alerts and rules for RabbitMQ.
 
+## Requirements
+
+These dashboards and alerts are based of on [detailed RabbitMQ metrics](https://github.com/rabbitmq/rabbitmq-server/tree/master/deps/rabbitmq_prometheus#selective-querying-of-per-object-metrics) that are not scraped out of the box. To scrape them you'll need an additional scraping path alongside the default path:
+
+- `/metrics/detailed?family=queue_coarse_metrics&family=queue_consumer_count`
+
+Below is an YAML example using the Prometheus Operators' ServiceMonitor CRD.
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: rabbitmq
+    app.kubernetes.io/name: rabbitmq
+  name: rabbitmq-detailed
+  namespace: production
+spec:
+  endpoints:
+  - interval: 30s
+    params:
+      family:
+      - queue_coarse_metrics
+      - queue_consumer_count
+    path: /metrics/detailed
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - production
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: rabbitmq
+      app.kubernetes.io/name: rabbitmq
+```
+
 ## How to use
 
 This mixin is designed to be vendored into the repo with your infrastructure config.
