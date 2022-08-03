@@ -4,7 +4,7 @@ A set of Grafana dashboards and Prometheus alerts and rules for RabbitMQ.
 
 ## Requirements
 
-These dashboards and alerts are based of on [detailed RabbitMQ metrics](https://github.com/rabbitmq/rabbitmq-server/tree/master/deps/rabbitmq_prometheus#selective-querying-of-per-object-metrics) that are not scraped out of the box. To scrape them you'll need an additional scraping path alongside the default path:
+These dashboards and alerts are based of on [detailed RabbitMQ metrics](https://github.com/rabbitmq/rabbitmq-server/blob/master/deps/rabbitmq_prometheus/metrics-detailed.md) that are not scraped out of the box. To scrape them you'll need an additional scraping path alongside the default path:
 
 - `/metrics/detailed?family=queue_coarse_metrics&family=queue_consumer_count`
 
