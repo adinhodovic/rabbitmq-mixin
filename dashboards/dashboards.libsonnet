@@ -96,7 +96,7 @@ local statPanel = grafana.statPanel;
         'Queues',
         datasource='$datasource',
         unit='short',
-        reducerFunction='mean',
+        reducerFunction='last',
         noValue='0'
       )
       .addTarget(prometheus.target(queueCountQuery))
@@ -113,7 +113,7 @@ local statPanel = grafana.statPanel;
       statPanel.new(
         'Queues with Messages Ready',
         datasource='$datasource',
-        reducerFunction='mean',
+        reducerFunction='last',
         noValue='0'
       )
       .addTarget(prometheus.target(queuesWithReadyMessagesCountQuery))
@@ -130,7 +130,7 @@ local statPanel = grafana.statPanel;
       statPanel.new(
         'Queues with Messages Unacked',
         datasource='$datasource',
-        reducerFunction='mean',
+        reducerFunction='last',
         noValue='0'
       )
       .addTarget(prometheus.target(queuesWithUnackedMessagesCountQuery))
@@ -147,7 +147,7 @@ local statPanel = grafana.statPanel;
 
     local vhostMessagesReadyQuery = |||
       sum(
-        rate(
+        increase(
           rabbitmq_detailed_queue_messages_ready{namespace="$namespace", vhost=~"$vhost"}[2m]
         )
       ) by (instance, vhost)
@@ -155,7 +155,7 @@ local statPanel = grafana.statPanel;
     ||| % $._config,
     local vhostMessagesUnackedQuery = |||
       sum(
-        rate(
+        increase(
           rabbitmq_detailed_queue_messages_unacked{namespace="$namespace", vhost=~"$vhost"}[2m]
         )
       ) by (instance, vhost)
@@ -260,7 +260,7 @@ local statPanel = grafana.statPanel;
 
     local queueMessagesReadyQuery = |||
       sum(
-        rate(
+        increase(
           rabbitmq_detailed_queue_messages_ready{namespace="$namespace", vhost=~"$vhost", queue=~"$queue"}[2m]
         )
       ) by (instance, vhost, queue)
@@ -268,7 +268,7 @@ local statPanel = grafana.statPanel;
     ||| % $._config,
     local queueMessagesUnackedQuery = |||
       sum(
-        rate(
+        increase(
           rabbitmq_detailed_queue_messages_unacked{namespace="$namespace", vhost=~"$vhost", queue=~"$queue"}[2m]
         )
       ) by (instance, vhost, queue)
