@@ -7,7 +7,7 @@
           {
             alert: 'RabbitmqTooManyMessagesInQueue',
             expr: |||
-              sum by (rabbitmq_cluster, instance, vhost, queue) (rabbitmq_detailed_queue_messages * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info) > %(queueMessageThreshold)s
+              sum by (rabbitmq_cluster, instance, vhost, queue) (rabbitmq_detailed_queue_messages * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) max(rabbitmq_identity_info) by (rabbitmq_cluster, instance, rabbitmq_node)) > %(queueMessageThreshold)s
             ||| % $._config,
             'for': '2m',
             labels: {
@@ -22,7 +22,7 @@
           {
             alert: 'RabbitmqNoConsumer',
             expr: |||
-              sum by (rabbitmq_cluster, instance, vhost, queue) (rabbitmq_detailed_queue_consumers{queue!~".*%(deadLetterQueueName)s.*"} * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info) == 0
+              sum by (rabbitmq_cluster, instance, vhost, queue) (rabbitmq_detailed_queue_consumers{queue!~".*%(deadLetterQueueName)s.*"} * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) max(rabbitmq_identity_info) by (rabbitmq_cluster, instance, rabbitmq_node)) == 0
             ||| % $._config,
             'for': '2m',
             labels: {
@@ -37,8 +37,8 @@
           {
             alert: 'RabbitmqUnroutableMessages',
             expr: |||
-              sum by(rabbitmq_node, rabbitmq_cluster) (rate(rabbitmq_channel_messages_unroutable_dropped_total[1m]) * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info) > 0 or
-              sum by(rabbitmq_node, rabbitmq_cluster) (rate(rabbitmq_channel_messages_unroutable_returned_total[1m]) * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info) > 0
+              sum by(rabbitmq_node, rabbitmq_cluster) (rate(rabbitmq_channel_messages_unroutable_dropped_total[1m]) * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) max(rabbitmq_identity_info) by (rabbitmq_cluster, instance, rabbitmq_node)) > 0 or
+              sum by(rabbitmq_node, rabbitmq_cluster) (rate(rabbitmq_channel_messages_unroutable_returned_total[1m]) * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) max(rabbitmq_identity_info) by (rabbitmq_cluster, instance, rabbitmq_node)) > 0
             |||,
             'for': '2m',
             labels: {
