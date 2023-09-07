@@ -148,7 +148,7 @@ local statPanel = grafana.statPanel;
     local vhostMessagesReadyQuery = |||
       sum(
         increase(
-          rabbitmq_detailed_queue_messages_ready{namespace="$namespace", vhost=~"$vhost"}[2m]
+          rabbitmq_detailed_queue_messages_ready{namespace="$namespace", vhost=~"$vhost"}[$__rate_interval]
         )
       ) by (instance, vhost)
       * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info{rabbitmq_cluster=~"$rabbitmq_cluster", namespace="$namespace"}
@@ -156,7 +156,7 @@ local statPanel = grafana.statPanel;
     local vhostMessagesUnackedQuery = |||
       sum(
         increase(
-          rabbitmq_detailed_queue_messages_unacked{namespace="$namespace", vhost=~"$vhost"}[2m]
+          rabbitmq_detailed_queue_messages_unacked{namespace="$namespace", vhost=~"$vhost"}[$__rate_interval]
         )
       ) by (instance, vhost)
       * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info{rabbitmq_cluster=~"$rabbitmq_cluster", namespace="$namespace"}
@@ -261,7 +261,7 @@ local statPanel = grafana.statPanel;
     local queueMessagesReadyQuery = |||
       sum(
         increase(
-          rabbitmq_detailed_queue_messages_ready{namespace="$namespace", vhost=~"$vhost", queue=~"$queue"}[2m]
+          rabbitmq_detailed_queue_messages_ready{namespace="$namespace", vhost=~"$vhost", queue=~"$queue"}[$__rate_interval]
         )
       ) by (instance, vhost, queue)
       * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info{rabbitmq_cluster=~"$rabbitmq_cluster", namespace="$namespace"}
@@ -269,7 +269,7 @@ local statPanel = grafana.statPanel;
     local queueMessagesUnackedQuery = |||
       sum(
         increase(
-          rabbitmq_detailed_queue_messages_unacked{namespace="$namespace", vhost=~"$vhost", queue=~"$queue"}[2m]
+          rabbitmq_detailed_queue_messages_unacked{namespace="$namespace", vhost=~"$vhost", queue=~"$queue"}[$__rate_interval]
         )
       ) by (instance, vhost, queue)
       * on(instance) group_left(rabbitmq_cluster, rabbitmq_node) rabbitmq_identity_info{rabbitmq_cluster=~"$rabbitmq_cluster", namespace="$namespace"}
